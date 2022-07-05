@@ -38,6 +38,7 @@
         @click="createPost"
         :class="{ disabled: isDisable }"
         class="btn-create"
+        
       >
         Create
       </button>
@@ -70,13 +71,15 @@ export default {
   },
   methods: {
     createPost() {
-      axios
-        .post("https://jsonplaceholder.typicode.com/posts", this.datas)
-        .then((response) => {
-          this.datas = response.data;
-          console.log(response);
-          this.$router.push({ name: "home" });
-        });
+      if(this.checkValidated()){
+        axios
+          .post("https://jsonplaceholder.typicode.com/posts", this.datas)
+          .then((response) => {
+            this.datas = response.data;
+            // console.log(response);
+            this.$router.push({ name: "home" });
+          });
+      }
     },
     validateUseId() {
       if (!this.datas.userId) {
@@ -104,7 +107,15 @@ export default {
         this.errors[attribute] = "";
       }
     },
-    
+    checkValidated (){
+      if (!this.validateUseId() || !this.validateTitle() || !this.validateBody() ){
+          this.validateUseId();
+          this.validateTitle();
+          this.validateBody();
+          return false;
+        }
+        return true
+    }
   },
   computed: {
     isDisable() {

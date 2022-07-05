@@ -58,20 +58,17 @@ export default {
 
 <style scoped>
 .edit-form {
-    
   border-radius: 12px;
   background-color: #fff;
   box-shadow: 0 4px 10px rgb(0 0 0 / 20%), 6px 12px 20px rgb(0 0 0 / 10%);
   padding: 24px;
   width: 80%;
   margin: 15px auto;
-
 }
-.edit-views{
-
-    text-align: left;
-      display: flex;
-      flex-direction: column;
+.edit-views {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
 }
 
 label {
@@ -86,7 +83,7 @@ input {
   font-size: 16px;
   width: 100%;
   height: 16px;
-  padding: 8px ;
+  padding: 8px;
   border-radius: 8px;
   border: 1px solid #ccc;
   outline: 3px solid transparent;
@@ -99,7 +96,6 @@ input:focus {
   border: 1px solid transparent;
 }
 .btn {
-  
   border: unset;
   font-size: 12px;
   text-transform: uppercase;
@@ -110,12 +106,13 @@ input:focus {
   box-shadow: 1px 1px 10px rgb(0 0 0 / 40%);
   transition: box-shadow 0.35s ease-out;
 }
-.btn-upda{
+.btn-upda {
   background-color: #1e68cf;
 }
-.action{
-    margin-top: 32px;
+.action {
+  margin-top: 32px;
   display: flex;
   justify-content: start;
+  gap:8px
 }
 </style>
