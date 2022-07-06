@@ -17,7 +17,7 @@
       id="Title"
       v-model="datas.title"
       @blur="validateTitle()"
-       @input="update('title', $event)"
+      @input="update('title', $event)"
       v-bind:class="{ 'is-invalid': errors.title }"
     />
     <p class="message">{{ errors.title }}</p>
@@ -27,34 +27,27 @@
       id="Body"
       v-model="datas.body"
       @blur="validateBody()"
-       @input="update('body', $event)"
+      @input="update('body', $event)"
       v-bind:class="{ 'is-invalid': errors.body }"
     />
     <p class="message">{{ errors.body }}</p>
-
-    <!-- Button -->
     <div class="formUpdate__action">
       <button
         @click="createPost"
         :class="{ disabled: isDisable }"
-        class="btn-create"
-        
+        class="btn btn-create"
       >
         Create
       </button>
       <router-link :to="{ name: 'home' }">
-        <button class="btn-back">Back</button>
+        <button class="btn btn-back">Back</button>
       </router-link>
     </div>
   </div>
 </template>
-
 <script>
-import axios from "axios";
-
 export default {
   name: "about-vue",
-
   data() {
     return {
       datas: {
@@ -71,14 +64,9 @@ export default {
   },
   methods: {
     createPost() {
-      if(this.checkValidated()){
-        axios
-          .post("https://jsonplaceholder.typicode.com/posts", this.datas)
-          .then((response) => {
-            this.datas = response.data;
-            // console.log(response);
-            this.$router.push({ name: "home" });
-          });
+      if (this.checkValidated()) {
+        this.$store.dispatch("createPost", this.datas);
+        this.$router.push({ name: "home" });
       }
     },
     validateUseId() {
@@ -107,15 +95,19 @@ export default {
         this.errors[attribute] = "";
       }
     },
-    checkValidated (){
-      if (!this.validateUseId() || !this.validateTitle() || !this.validateBody() ){
-          this.validateUseId();
-          this.validateTitle();
-          this.validateBody();
-          return false;
-        }
-        return true
-    }
+    checkValidated() {
+      if (
+        !this.validateUseId() ||
+        !this.validateTitle() ||
+        !this.validateBody()
+      ) {
+        this.validateUseId();
+        this.validateTitle();
+        this.validateBody();
+        return false;
+      }
+      return true;
+    },
   },
   computed: {
     isDisable() {
@@ -124,31 +116,36 @@ export default {
         : true;
     },
   },
-  created() {},
 };
 </script>
 
 <style scoped >
+@import url('https://fonts.googleapis.com/css2?family=Gulzar&family=Mingzat&display=swap');
 .about {
-  width: 80%;
-  margin: 15px auto;
-  border: 1px solid black;
+ border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 20%), 6px 12px 20px rgb(0 0 0 / 10%);
   padding: 24px;
+  width: 70%;
+  margin: 15px auto;
   text-align: left;
 }
 .about input.is-invalid {
   border-color: #dc3545;
 }
+.about h3 {
+  margin-bottom: 30px;
+  text-align: center;
+}
 .message {
   color: #dc3545;
 }
 label {
-  color: #000;
+  color: #808080;
   font-size: 16px;
   display: block;
-  margin: 8px 0;
+  margin: 16px 0;
 }
-
 input {
   color: #586068;
   font-size: 16px;
@@ -159,11 +156,13 @@ input {
   outline: 3px solid transparent;
   transition: all 0.2s ease;
 }
-
 input:focus {
   outline: 3px solid #c2d9fb;
   box-shadow: unset;
   border: 1px solid transparent;
+}
+p{
+  font-size: 12px;
 }
 .formUpdate__action {
   margin-top: 8px;
@@ -173,10 +172,20 @@ input:focus {
   margin-right: 24px;
   border-radius: 2px;
 }
-.btn-back {
-  background: red;
+.btn {
+  border: unset;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 1px 1px 10px rgb(0 0 0 / 40%);
+  transition: box-shadow 0.35s ease-out;
 }
-
+.btn-back {
+  background: #696969;
+}
 .btn-create {
   background: green;
 }

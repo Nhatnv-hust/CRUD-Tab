@@ -1,24 +1,18 @@
 <template>
   <div id="app">
-    <!-- <div>{{startPost}}</div>
-    <div>{{endPost}}</div>
-    <div>{{postAmount}}</div>
-    <div>{{pageNumber}}</div> -->
-    <!-- pagination -->
     <span v-for="(amountPage, index) in pageNumber" :key="index">
-      <button class="btn-pagi " @click="handleAmountPage(amountPage)">
+      <button class="btn-pagi" @click="handleAmountPage(amountPage)">
         {{ amountPage }}
       </button>
     </span>
     <br />
-    <!-- main list -->
     <table>
       <tr>
-        <th>UserId</th>
-        <th>Id</th>
-        <th>Title</th>
-        <th>Body</th>
-        <th>Action</th>
+        <th class="UserId">UserId</th>
+        <th class="Id-th">Id</th>
+        <th class="Title">Title</th>
+        <th class="Body">Body</th>
+        <th class="Action">Action</th>
       </tr>
       <tr v-for="data in postsOnPage" :key="data.id">
         <td>{{ data.userId }}</td>
@@ -34,13 +28,17 @@
             <router-link :to="{ name: 'edit', params: { id: data.id } }">
               <button class="btn btn-upda">Edit</button>
             </router-link>
-           <div class="space"></div>
+            <div class="space"></div>
             <button class="btn btn-dele" @click="showModal = true">
               Delete
             </button>
-            <!-- use the modal component, pass in the prop -->
             <teleport to="body">
-              <modaldelete :show="showModal" @close="comfirmDelete">
+              <modaldelete
+                :show="showModal"
+                @close="comfirmDelete(data)"
+                @cancerModal="backHome"
+                :pendingDelete="pendingDelete"
+              >
               </modaldelete>
             </teleport>
           </div>
@@ -50,9 +48,8 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import { mapState } from "vuex";
 import Modaldelete from "./modal/Modaldelete.vue";
-
 export default {
   name: "HomeView",
   components: {
@@ -60,7 +57,6 @@ export default {
   },
   data() {
     return {
-      datas: [],
       showModal: false,
       amountPages: 10,
       currentPage: 1,
@@ -68,42 +64,35 @@ export default {
     };
   },
   created() {
-    axios.get("https://jsonplaceholder.typicode.com/posts").then((response) => {
-      this.datas = response.data;
-      console.log(response);
-    });
+    this.$store.dispatch("Getpost");
+    console.log("test created");
   },
   methods: {
-    comfirmDelete(id) {
+    backHome() {
       this.showModal = false;
-      this.delData(id);
     },
-    delData(id) {
-      axios
-        .delete(`https://jsonplaceholder.typicode.com/posts/${id}`)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error.response);
-        });
+    comfirmDelete(data) {
+      this.$store.dispatch("Deletepost", data);
+      this.showModal = false;
     },
     // mount Pagination
     handleAmountPage(value) {
       console.log("check value ", value);
       this.currentPage = value;
       this.postsOnPage = this.datas.slice(this.startPost, this.endPost);
-      console.log("chyeck postsOnPage", this.postsOnPage);
+      console.log("check postsOnPage", this.postsOnPage);
     },
   },
   computed: {
+    ...mapState({
+      datas: (state) => state.datas,
+    }),
     startPost() {
       const startPost = (this.currentPage - 1) * this.amountPages;
       return startPost;
     },
     endPost() {
       const endPost = this.startPost + this.amountPages;
-
       return endPost;
     },
     postAmount() {
@@ -126,12 +115,11 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .btn {
   display: flex;
   justify-content: end;
 }
-
 #app td,
 #app th {
   border: 1px solid #ddd;
@@ -174,21 +162,38 @@ export default {
 }
 .action {
   display: flex;
+  justify-content: center;
+  padding: 15%;
 }
 .space {
- width: 1px;
-      background-color: black;
-      height: 22px;
-      float: left;
-      border: 1px ridge silver ;
-      border-radius: 2px;
+  width: 1px;
+  background-color: black;
+  height: 22px;
+  float: center;
+  border: 1px ridge silver;
+  border-radius: 2px;
+  margin: 0px 2px;
 }
 .btn-pagi {
   cursor: pointer;
   padding: 8px 24px;
-  margin:10px 4px 30px;
+  margin: 10px 4px 30px;
   border-radius: 6px;
   background-color: #f2f2f2;
 }
-
+.UserId {
+  width: 5%;
+}
+.Id-th {
+  width: 5%;
+}
+.Title {
+  width: 30%;
+}
+.Body {
+  width: 60%;
+}
+.Action {
+  width: 20%;
+}
 </style>
